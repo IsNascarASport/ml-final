@@ -1,8 +1,6 @@
-"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-"""
 
 import csv
 import random
@@ -26,14 +24,12 @@ next_c = shape (num_layers, batch, H)
 out, (next_h, next_c) = lstm(in, (h0, c0))
 """
 
-"""
 class TweetDecider(nn.Module):
     def __init__(self, input_dim, hidden_dim, num_layers, num_classes, drop_prob = 0.5):
         super(TweetDecider, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.num_classes = num_classes
-"""
 
 X_train, y_train = [], []
 X_validation, y_validation = [], []
