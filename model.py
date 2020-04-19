@@ -1,6 +1,8 @@
+"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+"""
 
 import csv
 import random
@@ -24,37 +26,34 @@ next_c = shape (num_layers, batch, H)
 out, (next_h, next_c) = lstm(in, (h0, c0))
 """
 
+"""
 class TweetDecider(nn.Module):
     def __init__(self, input_dim, hidden_dim, num_layers, num_classes, drop_prob = 0.5):
         super(TweetDecider, self).__init__()
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.num_classes = num_classes
+"""
 
-X_and_y_train = []
 X_train, y_train = [], []
-X_per_user = {'thetalkingjed': [],
-    'isnascarasport': [],
-    'wildenian_thot': []}
+X_validation, y_validation = [], []
 
-# Read all data from csv into dict
-with open('tweet_data.csv', mode='r') as f:
-    reader = csv.reader(f, dialect='excel')
+training_file = 'training.csv'
+validation_file = 'validation.csv'
+
+# Read test data
+with open(training_file, mode='r') as f:
+    reader = csv.reader(f)
     for row in reader:
-        user = row[4].lower()
-        X_per_user[user].append(row)
+        X_train.append(row[:4])
+        y_train.append(row[4])
 
-# Randomly sample 200 from each user
-for key in X_per_user.keys():
-    data = X_per_user[key]
-    sample_size = 250
-    X_and_y_train.extend(random.sample(data, sample_size))
-
-# Shuffle and split into X_train and y_train
-random.shuffle(X_and_y_train)
-for entry in X_and_y_train:
-    X_train.append(X_and_y_train[:4])
-    y_train.append(entry[4])
+# Read validation data
+with open(validation_file, mode='r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        X_validation.append(row[:4])
+        y_validation.append(row[4])
 
 """
 EXPLANATION OF DATA
