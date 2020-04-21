@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import torch.optim as optims
 
 import csv
 import random
@@ -30,6 +31,36 @@ class TweetDecider(nn.Module):
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.num_classes = num_classes
+        self.num_layers = 4
+        self.embed = nn.Embedding(vocab_size, input_dim)
+        self.lstm_layer = nn.LSTM(input_dim, hidden_dim, self.num_layers)
+        self.fc = nn.Linear(hidden_dim, num_classes)
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x, hidden):
+        N = x.size(0)
+        x = x.long()
+        embeds = self.embedding(x)
+        lstm_out, hidden = self.lstm(embeds, hidden)
+        lstm_out = lstm_out.contiguous().view(-1, self.hidden_dim)
+        out = self.fc(lstm_out)
+        out = self.sigmoid(out)
+
+        out = out.view(batch_size, -1)
+        out = out[:,-1]
+        return out, hidden
+
+        out = out.view(N, -1)
+        out = out[:,-1]
+        return out, hidden
+
+    def init_hidden(self, batch_size):
+        weight = next(self.parameters()).data
+        hidden = (weight.new(self.num_layers, batch_size, self.hidden_dim).zero_().to(device),
+                      weight.new(self.num_layers, batch_size, self.hidden_dim).zero_().to(device))
+        return hidden
+
+
 
 X_train, y_train = [], []
 X_validation, y_validation = [], []
