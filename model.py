@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+import csv
+import random
+
 """
 Creates an lstm model with Input (Dimention D, Hidden Dimention H and # of LSTM Layers)
 
@@ -27,3 +30,36 @@ class TweetDecider(nn.Module):
         self.input_dim = input_dim
         self.hidden_dim = hidden_dim
         self.num_classes = num_classes
+
+X_train, y_train = [], []
+X_validation, y_validation = [], []
+
+training_file = 'training.csv'
+validation_file = 'validation.csv'
+
+# Read test data
+with open(training_file, mode='r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        X_train.append(row[:4])
+        y_train.append(row[4])
+
+# Read validation data
+with open(validation_file, mode='r') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        X_validation.append(row[:4])
+        y_validation.append(row[4])
+
+"""
+EXPLANATION OF DATA
+====================
+
+Each data point in X_train is a list containing:
+* X[0]: raw text of tweet
+* X[1]: number of characters in tweet
+* X[2]: percentage of uppercase characters in tweet
+* X[3]: number of punctuation characters in tweet
+
+Each data point in y_train is the author of its corresponding tweet in X_train.
+"""
